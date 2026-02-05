@@ -20,4 +20,9 @@
       <h1>ID: {{oCategoria()?.id}}</h1>
       <h1> Quieres borrar la categoria "{{ oCategoria()?.nombre }}"?</h1>
     </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-danger" (click)="deleteCategoria(oCategoria()?.id!)">Eliminar</button>
+      <a class="btn btn-secondary" [routerLink]="['/admin/categoria/plist']">Cancelar</a>
+    </div>
  
