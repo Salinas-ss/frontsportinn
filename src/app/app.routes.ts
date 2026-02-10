@@ -24,7 +24,6 @@ import { NoticiaPlistAdminRouted } from './component/noticia/plist-admin-routed/
 import { ClubPlistAdminRouted } from './component/club/plist-admin-routed/club-plist';
 import { CuotaPlistAdminRouted } from './component/cuota/plist-admin-routed/cuota-plist';
 import { TipousuarioPlistAdminRouted } from './component/tipousario/plist-admin-routed/tipousuario-plist';
-import { TemporadaPlist } from './component/temporada/temporada-plist/temporada-plist';
 import { PlistEquipo } from './component/equipo/plist-admin-routed/equipo-plist';
 import { EquipoViewRouted } from './component/equipo/view-admin-routed/equipo-view';
 import { EquipoDeleteAdminRouted } from './component/equipo/delete-admin-routed/equipo.delete';
@@ -60,6 +59,7 @@ import { ClubEditAdminRouted } from './component/club/edit-admin-routed/club-edi
 import { CarritoDeleteAdminRouted } from './component/carrito/delete-admin-routed/carrito-delete';
 import { ComentarioartDeleteAdminRouted } from './component/comentarioart/delete-admin-routed/delete-admin-routed';
 import { FacturaDeleteAdminRouted } from './component/factura/delete-admin-routed/factura-delete';
+import { TemporadaPlist } from './component/temporada/plist-admin-routed/temporada-plist';
 
 
 export const routes: Routes = [
