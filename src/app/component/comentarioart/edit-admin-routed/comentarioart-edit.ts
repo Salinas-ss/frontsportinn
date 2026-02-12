@@ -11,7 +11,6 @@ import { IUsuario } from '../../../model/usuario';
 import { ArticuloService } from '../../../service/articulo';
 import { ComentarioartService } from '../../../service/comentarioart';
 import { UsuarioService } from '../../../service/usuarioService';
-import { UsuarioPlistAdminUnrouted } from '../../usuario/plist-admin-unrouted/usuario-plist-admin-unrouted';
 import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
 
@@ -77,8 +76,48 @@ export class ComentarioartEditAdminRouted implements OnInit {
     const start = page * rpp;
     return this.sortedArticulos().slice(start, start + rpp);
   });
+  usuarioSearch = signal<string>('');
+  usuarioSortDirection = signal<'asc' | 'desc'>('asc');
+  usuarioPage = signal<number>(0);
+  usuarioRpp = signal<number>(10);
+  filteredUsuarios = computed(() => {
+    const term = this.usuarioSearch().toLowerCase().trim();
+    const items = this.usuarios();
+    if (!term) {
+      return items;
+    }
+    return items.filter((usuario) => {
+      const nombre = `${usuario.nombre ?? ''} ${usuario.apellido1 ?? ''} ${usuario.apellido2 ?? ''}`
+        .toLowerCase()
+        .trim();
+      const username = (usuario.username || '').toLowerCase();
+      const idMatch = String(usuario.id).includes(term);
+      return nombre.includes(term) || username.includes(term) || idMatch;
+    });
+  });
+  sortedUsuarios = computed(() => {
+    const direction = this.usuarioSortDirection();
+    return [...this.filteredUsuarios()].sort((a, b) => {
+      if (direction === 'asc') {
+        return a.id - b.id;
+      }
+      return b.id - a.id;
+    });
+  });
+  usuarioTotalPages = computed(() => {
+    const total = this.filteredUsuarios().length;
+    const rpp = this.usuarioRpp();
+    return Math.max(1, Math.ceil(total / rpp));
+  });
+  pagedUsuarios = computed(() => {
+    const page = this.usuarioPage();
+    const rpp = this.usuarioRpp();
+    const start = page * rpp;
+    return this.sortedUsuarios().slice(start, start + rpp);
+  });
 
   @ViewChild('articuloDialog') articuloDialog?: TemplateRef<any>;
+  @ViewChild('usuarioDialog') usuarioDialog?: TemplateRef<any>;
 
   constructor(private dialog: MatDialog) {}
 
@@ -255,34 +294,15 @@ export class ComentarioartEditAdminRouted implements OnInit {
   }
 
   openUsuarioFinderModal(): void {
-    const dialogRef = this.dialog.open(UsuarioPlistAdminUnrouted, {
+    if (!this.usuarioDialog) {
+      return;
+    }
 
+    this.dialog.open(this.usuarioDialog, {
       height: '800px',
       width: '1100px',
       maxWidth: '95vw',
       panelClass: 'usuario-dialog',
-      data: {
-        title: 'Aqui elegir usuario',
-        message: 'Plist finder para encontrar el usuario y asignarlo al comentario',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((usuario: IUsuario | null) => {
-      if (usuario) {
-        this.comentarioartForm.patchValue({
-          id_usuario: usuario.id,
-        });
-        this.syncUsuario(usuario.id);
-        this.snackBar.open(
-          `Usuario seleccionado: ${usuario.nombre} ${usuario.apellido1 ?? ''} ${
-            usuario.apellido2 ?? ''
-          }`,
-          'Cerrar',
-          {
-            duration: 3000,
-          },
-        );
-      }
     });
   }
 
@@ -326,5 +346,40 @@ export class ComentarioartEditAdminRouted implements OnInit {
     this.snackBar.open(`Articulo seleccionado: ${articulo.descripcion}`, 'Cerrar', {
       duration: 3000,
     });
+  }
+
+  onUsuarioSearch(value: string): void {
+    this.usuarioSearch.set(value);
+    this.usuarioPage.set(0);
+  }
+
+  toggleUsuarioSort(): void {
+    this.usuarioSortDirection.set(this.usuarioSortDirection() === 'asc' ? 'desc' : 'asc');
+  }
+
+  onUsuarioPageChange(page: number): void {
+    this.usuarioPage.set(page);
+  }
+
+  onUsuarioRppChange(rpp: number): void {
+    this.usuarioRpp.set(rpp);
+    this.usuarioPage.set(0);
+  }
+
+  selectUsuario(usuario: IUsuario, dialogRef: any): void {
+    this.comentarioartForm.patchValue({
+      id_usuario: usuario.id,
+    });
+    this.syncUsuario(usuario.id);
+    dialogRef?.close();
+    this.snackBar.open(
+      `Usuario seleccionado: ${usuario.nombre} ${usuario.apellido1 ?? ''} ${
+        usuario.apellido2 ?? ''
+      }`,
+      'Cerrar',
+      {
+        duration: 3000,
+      },
+    );
   }
 }
