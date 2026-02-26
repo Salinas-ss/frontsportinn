@@ -1,0 +1,102 @@
+<div>
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <form [formGroup]="pagoForm" (ngSubmit)="onSubmit()" novalidate>
+      @if (mode === 'edit') {
+        <div class="mb-4">
+          <label for="id" class="form-label">ID del pago</label>
+          <input type="text" class="form-control" id="id" formControlName="id" readonly />
+        </div>
+      }
+
+      <!-- Abonado (Switch) -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="abonado" formControlName="abonado" />
+                            <label class="form-check-label ms-2" for="abonado">Abonado</label>
+                        </div>
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="mb-4">
+                        <label for="fecha" class="form-label">Fecha <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" [class.is-invalid]="fecha?.invalid && fecha?.touched"
+                            [class.is-valid]="fecha?.valid && fecha?.touched" id="fecha" formControlName="fecha" />
+                        @if (fecha?.invalid && fecha?.touched) {
+                        <div class="invalid-feedback">
+                            <span>La fecha es obligatoria.</span>
+                        </div>
+                        }
+                    </div>
+
+      <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+        <div class="mb-4">
+          <label for="cuota" class="form-label">Cuota <span class="text-danger">*</span></label>
+          <input id="cuota" type="text" class="form-control" [value]="selectedCuota()?.descripcion" readonly />
+        </div>
+
+        <div class="d-flex gap-3 align-items-end">
+          <button type="button" class="btn btn-info" (click)="openCuotaFinderModal()">
+            <i class="bi bi-search me-2"></i>Buscar
+          </button>
+          <div>
+            <label for="display_id_cuota" class="form-label">ID Cuota</label>
+            <input type="text" class="form-control" id="display_id_cuota" formControlName="id_cuota" readonly />
+          </div>
+          @if (selectedCuota()) {
+            <div class="grow">
+              <label class="form-label">Información</label>
+              <p class="form-control-plaintext fw-semibold mb-0">{{ selectedCuota()?.descripcion }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+        <div class="mb-4">
+          <label for="jugador" class="form-label">Jugador <span class="text-danger">*</span></label>
+          <input id="jugador" type="text" class="form-control" [value]="selectedJugador()?.usuario?.nombre + ' ' + selectedJugador()?.usuario?.apellido1" readonly />
+        </div>
+
+        <div class="d-flex gap-3 align-items-end">
+          <button type="button" class="btn btn-info" (click)="openJugadorFinderModal()">
+            <i class="bi bi-search me-2"></i>Buscar
+          </button>
+          <div>
+            <label for="display_id_jugador" class="form-label">ID Jugador</label>
+            <input type="text" class="form-control" id="display_id_jugador" formControlName="id_jugador" readonly />
+          </div>
+          @if (selectedJugador()) {
+            <div class="grow">
+              <label class="form-label">Información</label>
+              <p class="form-control-plaintext fw-semibold mb-0">{{ selectedJugador()?.usuario?.nombre + ' ' + selectedJugador()?.usuario?.apellido1 }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <button type="button" (click)="onCancel()" class="btn btn-outline-secondary"> Cancelar </button>
+        <button type="submit" class="btn btn-primary" [disabled]="submitting() || pagoForm.invalid">
+          @if (submitting()) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          }
+          {{ mode === 'create' ? 'Crear Pago' : 'Guardar Cambios' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

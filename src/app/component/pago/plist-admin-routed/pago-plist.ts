@@ -23,7 +23,7 @@ import { BotoneraActionsPlist } from '../../shared/botonera-actions-plist/botone
     RouterLink,
     TrimPipe,
     DatetimePipe,
-    BotoneraActionsPlist
+    BotoneraActionsPlist,
   ]
 })
 export class PagoPlistComponent {

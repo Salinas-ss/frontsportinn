@@ -91,6 +91,7 @@ import { JugadorEditAdminRouted } from './component/jugador/edit-admin-routed/ju
 import { CompraEditAdminRouted } from './component/compra/edit-admin-routed/compra-edit';
 import { PartidoEditAdminRouted } from './component/partido/edit-admin-routed/partido-edit';
 import { TemporadaNewAdminRouted } from './component/temporada/new-admin-routed/temporada-new';
+import { PagoNewAdminRouted } from './component/pago/new-admin-routed/pago-new';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -202,6 +203,7 @@ export const routes: Routes = [
   { path: 'pago/view/:id', component: PagoViewAdminRouted },
   { path: 'pago/edit/:id', component: PagoEditAdminRouted },
   { path: 'pago/delete/:id', component: PagoDeleteAdminRouted },
+  { path: 'pago/new', component: PagoNewAdminRouted },
   { path: 'categoria/delete/:id', component: CategoriaDeleteAdminRouted },
   { path: 'puntuacion', component: PuntuacionPlistAdminRouted },
   { path: 'puntuacion/noticia/:id_noticia', component: PuntuacionPlistAdminRouted },
